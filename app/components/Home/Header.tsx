@@ -141,6 +141,7 @@ export default function Header() {
                             width={400}
                             height={300}
                             className="drop-shadow-xl"
+                            unoptimized
                         />
                     </motion.div>
                     
