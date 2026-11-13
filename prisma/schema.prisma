@@ -1,0 +1,122 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+generator client {
+  provider = "prisma-client"
+  output   = "../app/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id String @id @default(cuid())
+  name String
+  email String @unique
+  password String?
+  userInformation UserInformation?
+  skills UserSkill[]
+  experience Experience[]
+  projects Project[]
+  createdAt DateTime @default(now())
+}
+
+model Skill {
+  id String @id @default(cuid())
+  name String @unique
+  slug String @unique
+  category String
+  users UserSkill[]
+  experiences ExperienceSkill[]
+  projects ProjectSkill[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model UserSkill {
+  id String @id @default(cuid())
+  userId String
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  skillId String
+  skill Skill @relation(fields: [skillId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([userId, skillId])
+}
+
+model Experience {
+  id String @id @default(cuid())
+  userId String
+  title String
+  company String
+  country String
+  description String
+  startDate DateTime
+  endDate DateTime?
+  skills ExperienceSkill[]
+  responsibilities ExperienceResponsible[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model ExperienceSkill {
+  id String @id @default(cuid())
+  experienceId String
+  experience Experience @relation(fields: [experienceId], references: [id], onDelete: Cascade)
+  skillId String
+  skill Skill @relation(fields: [skillId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([experienceId, skillId])
+}
+
+model ExperienceResponsible {
+  id String @id @default(cuid())
+  experienceId String
+  responsibility String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  experience Experience @relation(fields: [experienceId], references: [id], onDelete: Cascade)
+}
+
+model Project {
+  id String @id @default(cuid())
+  userId String?
+  user User? @relation(fields: [userId], references: [id])
+  title String
+  description String
+  imagePath String
+  link String
+  skills ProjectSkill[]
+  createdDate DateTime
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model ProjectSkill {
+  id String @id @default(cuid())
+  projectId String
+  project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  skillId String 
+  skill Skill @relation(fields: [skillId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model UserInformation {
+  id String @id @default(cuid())
+  userId String @unique
+  address String
+  country String
+  school String
+  phoneNumber String
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
