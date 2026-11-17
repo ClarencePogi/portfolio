@@ -33,16 +33,16 @@ const stacks: Stack[] = [
 ];
 
 const container = {
-  hidden: {},
-  show: { transition: { staggerChildren: 0.1 } },
+    hidden: {},
+    show: { transition: { staggerChildren: 0.1 } },
 };
 
 const card = {
-  hidden: { opacity: 0, y: 24 },
-  show: { opacity: 1, y: 0, transition: { duration: 0.5 } },
+    hidden: { opacity: 0, y: 24 },
+    show: { opacity: 1, y: 0, transition: { duration: 0.5 } },
 };
 
-export default function Main({ skills, experiences, projects }: { skills: Skill[], experiences: Experience[], projects: Project[]}) {
+export default function Main({ skills, experiences, projects }: { skills: Skill[], experiences: Experience[], projects: Project[] }) {
     const grouped_skills = useMemo(() => {
         return skills.reduce((acc: any, item: Skill) => {
             const formatted_category = groupNameFormatter(item.category);
@@ -65,28 +65,32 @@ export default function Main({ skills, experiences, projects }: { skills: Skill[
     }
 
     return <>
-        <main className="flex flex-col gap-6 px-30 py-10 bg-white">
+        <main className="flex flex-col gap-6 md:px-30 px-2 py-10 bg-white">
             <section className="flex flex-col gap-4">
-                <div>
-                    <h1 className="dark:text-black">How the stack fits together</h1>
-                    <p className="text-gray-600">A request moves down through three layers before anything comes back to the <br />
-                        browser. Each one below is a place I actually work.</p>
+                <div className='md:p-0 pt-40'>
+                    <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold leading-tight dark:text-black">
+                        How the stack fits together
+                    </h1>
+                    <p className="mt-2 sm:mt-3 text-sm sm:text-base lg:text-lg leading-relaxed text-gray-600 max-w-2xl">
+                        A request moves down through three layers before anything comes back to the{" "}
+                        <br className="hidden md:block" />
+                        browser. Each one below is a place I actually work.
+                    </p>
                 </div>
                 <motion.div
-                    className="grid grid-cols-3 gap-6 h-auto justify-items-center"
+                    className="grid grid-cols-1 w-full sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 w-full justify-items-center"
                     variants={container}
                     initial="hidden"
                     whileInView="show"
-                    viewport={{ once: true, amount: 0.2 }}
-                >
+                    viewport={{ once: true, amount: 0.2 }}>
                     {stacks.map(stack => (
-                        <motion.div key={stack.title} variants={card}>
-                            <StackCard key={stack.title} item={stack} />
+                        <motion.div key={stack.title} variants={card} className="w-full">
+                            <StackCard item={stack} />
                         </motion.div>
                     ))}
                 </motion.div>
             </section>
-            <section className="grid grid-cols-2 gap-6 h-auto">
+            <section className="grid md:grid-cols-2 gap-6 h-auto">
                 <div className="bg-white dark:bg-[#18181B] flex flex-col gap-6 rounded-2xl 
                     shadow-md dark:shadow-black/30 
                     p-6 border border-gray-100 dark:border-gray-800 
@@ -128,7 +132,7 @@ export default function Main({ skills, experiences, projects }: { skills: Skill[
                                 <div className="flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1">
                                     <h4 className="font-semibold text-gray-900 dark:text-white">{exp.title}</h4>
                                     <span className="text-xs font-medium text-gray-400">
-                                        {date_format(exp.startDate)} - { exp.endDate == null ? 'Present' : date_format(exp.endDate) }
+                                        {date_format(exp.startDate)} - {exp.endDate == null ? 'Present' : date_format(exp.endDate)}
                                     </span>
                                 </div>
                                 <p className="text-sm font-medium text-emerald-600">
