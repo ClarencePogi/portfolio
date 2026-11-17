@@ -6,16 +6,22 @@ export async function GET(
   { params }: { params: Promise<{ path: string[] }> }
 ) {
   const { path } = await params
-  const result = await get(path.join('/'), { access: 'private' })
 
-  if (!result || result.statusCode !== 200) {
-    return new NextResponse('Not found', { status: 404 })
+  try {
+    const result = await get(path.join('/'), { access: 'private' })
+
+    if (!result || result.statusCode !== 200) {
+      return new NextResponse('Not found', { status: 404 })
+    }
+
+    return new NextResponse(result.stream, {
+      headers: {
+        'Content-Type': result.blob.contentType,
+        'Cache-Control': 'public, max-age=31536000, immutable',
+      },
+    })
+  } catch (err) {
+    console.error('Blob error:', err)
+    return new NextResponse('Image unavailable', { status: 502 })
   }
-
-  return new NextResponse(result.stream, {
-    headers: {
-      'Content-Type': result.blob.contentType,
-      'Cache-Control': 'public, max-age=31536000, immutable',
-    },
-  })
 }
