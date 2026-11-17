@@ -1,3 +1,4 @@
+// app/api/image/[...path]/route.ts
 import { get } from '@vercel/blob'
 import { NextResponse } from 'next/server'
 
@@ -8,7 +9,10 @@ export async function GET(
   const { path } = await params
 
   try {
-    const result = await get(path.join('/'), { access: 'private' })
+    const result = await get(path.join('/'), {
+      access: 'private',
+      storeId: process.env.BLOB_STORE_ID,
+    })
 
     if (!result || result.statusCode !== 200) {
       return new NextResponse('Not found', { status: 404 })
@@ -18,6 +22,7 @@ export async function GET(
       headers: {
         'Content-Type': result.blob.contentType,
         'Cache-Control': 'public, max-age=31536000, immutable',
+        'X-Content-Type-Options': 'nosniff',
       },
     })
   } catch (err) {
